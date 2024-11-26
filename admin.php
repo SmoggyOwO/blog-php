@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Check if the user is logged in
 if (!isset($_SESSION['name'])) {
     echo "You must log in first <a href='index.php'>Login</a>";
     exit();
@@ -18,7 +17,6 @@ if (isset($_POST['submit'])) {
     $content = mysqli_real_escape_string($connection, $_POST['content']);
     $postedBy = $_SESSION['name'];
 
-    // Insert new blog post
     $stmt = mysqli_prepare($connection, "INSERT INTO blogdata (title, category, content, Postedby) VALUES (?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, 'ssss', $title, $category, $content, $postedBy);
     mysqli_stmt_execute($stmt);
@@ -31,33 +29,73 @@ if (isset($_POST['submit'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Blog Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .well { margin-top: 41px; }
-        .col-md-4 { margin-top: 40px; }
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .post-container {
+            max-width: 700px;
+            margin: auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .btn-post {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: all 0.3s ease;
+        }
+        .btn-post:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+    <div class="container py-5">
+        <div class="header-section">
+            <h2 class="mb-0">Create New Blog Post</h2>
+            <div>
+                <span class="me-3">Signed in as <?php echo $_SESSION['name']; ?></span>
+                <a href="logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
+            </div>
+        </div>
 
-<div class="col-md-4 col-md-offset-8">
-    Signed in as <?php echo $_SESSION['name']; ?><br><a href="logout.php">Logout</a>
-</div>
-
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="well">
-            <h1>Create New Post</h1>
-            <hr>
+        <div class="post-container">
             <form action="admin.php" method="post">
-                <h4>Title:</h4><input class="form-control" type="text" name="title" required><br>
-                <h4>Category:</h4><input class="form-control" type="text" name="category"><br>
-                <h4>Content:</h4><textarea class="form-control" name="content" required></textarea><br>
-                <input type="submit" name="submit" value="Post" class="btn btn-primary btn-block">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="category" name="category">
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+                </div>
+                <button type="submit" name="submit" class="btn btn-post btn-primary w-100">Post Blog</button>
             </form>
         </div>
     </div>
-</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
